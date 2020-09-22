@@ -91,19 +91,3 @@ value(4,1) = y(1) - 0.5; % detect concentration = min while falling
 isterminal(4,1) = 1; % stop the integrator
 direction(4,1) = -1; % negative direction only
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
