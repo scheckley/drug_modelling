@@ -73,4 +73,4 @@ function yhist = history(~,p)
 % 'p' stands for additional parameters which can be passed to the function.
 
 yhist = [p.A0, p.c0];
-end
+end3
