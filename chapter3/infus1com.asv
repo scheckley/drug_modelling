@@ -1,0 +1,92 @@
+function infus1com
+
+% one compartment model with infusion
+% infus1com computes plasma concentration versus time course and creates
+% plots for a one-compartment model. Drug doses are applied as infusions.
+% The function has no parameters.
+
+% PK parameters
+
+p.Dose = 200; %dose [mg]
+p.tStop = 2; % infusion time stop [h]
+p.R = p.Dose/p.tStop; % infusion rate [mg/h]
+p.V = 12.6; % volume of distribution [L]
+p.Cl = 2.16; % clearance [L/h]
+
+
+options = odeset('Events', @fevents, 'RelTol', 1e-3, 'AbsTol', 1e-3);
+
+ie = 99; % any non-empty value to avoid 't=0' as event
+tspan = [0,100]; % integration time interval
+c0 = 0; % initial concentration value
+
+% prepare data for plotting
+
+timepoints = [];
+concPoints = [];
+ratePoints = [];
+
+% Call ode solver and check events
+
+while ~isempty(ie)
+    [t, c, te, ce, ie] = ode45(@derivatives, tspan, c0, options, p);
+    % collect data for plotting
+    timePoints = [timePoints; t];
+    concPoints = [concPoints; c];
+    ratePoints = [ratePoints; p.R*ones(length(t),1)];
+    tspan = [te(end) 100];
+    c0 = ce(end,1);
+    %check if an event is detected
+    switch ie(end)
+        case 1 % event: stop infusion
+            p.R = 0;
+        case 2 % event: end of observation
+            ie = [];
+        otherwise
+            % no action needed - placeholder for other events
+    end;
+end
+
+% generate plots
+subplot(3,1,1)
+plot(timePoints, ratePoitns, '-k', 'LineWidth', 2);
+hold on
+title({' ', '\fontsize{13}One-Compartment Model with Infusion', ''})
+ylim([0 110])
+ylabel('\fontsize{13}Rate [mg/h]')
+subplot(3,1,2:3);
+plot(timePoints, concPoints, '-k', 'LineWidth',2)
+hold on;
+grid minor;
+grid on;
+xlabel('\fontsize{13}Time [hour]')
+ylabel('\fontsize{13}Concentration [mg/L]')
+
+% save plots
+print('-r900', '-dtiff', 'infus1com')
+end
+
+function dcdt = derivatives(t, c, p)
+% dcdt = ...
+
+dcdt = r(t, p)/p.V - p.CL/p.V*c;
+end
+
+function rt = r(~,p)
+
+% R specifies the infusion rate
+% rt = r(t,p) returns infusion rate 'rt' at time 't', and with parameters
+% 'p'.
+
+% infusion (depends on event)
+rt = p.R;
+end
+
+function [value, isterminal, direction] = fevents(t, ~, p)
+%[value, isterminal, direction] = fevents(t,y,p) detects the exact time
+%points of events specified as a function of time 't', vector of
+%independent variab;es
+
+
+
+
