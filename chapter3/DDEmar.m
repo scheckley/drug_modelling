@@ -74,7 +74,3 @@ function yhist = history(~,p)
 
 yhist = [p.A0, p.c0];
 end
-
-
-
-
