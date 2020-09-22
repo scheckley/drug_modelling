@@ -1,0 +1,5 @@
+disp('running intermediate dose...')
+concmod('intermittent',50)
+disp('running continuous dose...')
+concmod('continuous',50)
+disp('done!')
